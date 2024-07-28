@@ -1,1 +1,10 @@
 */node_modules
+*/build
+*/dist
+*/.env*
+
+frontend/coverage
+frontend/.next/
+frontend/out/
+
+*/next-env.d.ts
