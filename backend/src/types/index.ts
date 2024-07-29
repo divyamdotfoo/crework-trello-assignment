@@ -16,8 +16,16 @@ export interface ISession extends Document {
 export interface ITask extends Document {
   userId: string;
   title: string;
-  description?: string;
   status: TaskStatus;
+  description?: string;
+  priority?: TaskPriority;
+  deadline?: number;
+}
+
+export enum TaskPriority {
+  LOW = "low",
+  MEDIUM = "medium",
+  URGENT = "urgent",
 }
 
 export enum TaskStatus {

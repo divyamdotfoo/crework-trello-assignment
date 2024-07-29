@@ -23,6 +23,21 @@ const taskSchema = new mongoose.Schema<ITask>({
   title: { type: String, required: true },
   description: String,
   status: { type: String, required: true },
+  priority: String,
 });
 
 export const Task = mongoose.model<ITask>("Task", taskSchema);
+
+// cascading delete all the sessions and the tasks once the user is removed from db
+userSchema.pre("findOneAndDelete", async function (next) {
+  const userId = this.getFilter()._id;
+
+  try {
+    await Session.deleteMany({ userId });
+    await Task.deleteMany({ userId });
+
+    next();
+  } catch (error) {
+    console.error(`Error cascading deletes for user ${userId}: `, error);
+  }
+});
