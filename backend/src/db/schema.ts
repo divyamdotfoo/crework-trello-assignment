@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type { ISession, ITask, IUser } from "../types";
+import type { ISession, ITask, IUser } from "../types/index";
 
 const userSchema = new mongoose.Schema<IUser>({
   name: { type: String, required: true },
@@ -24,6 +24,8 @@ const taskSchema = new mongoose.Schema<ITask>({
   description: String,
   status: { type: String, required: true },
   priority: String,
+  createdAt: Number,
+  deadline: Number,
 });
 
 export const Task = mongoose.model<ITask>("Task", taskSchema);

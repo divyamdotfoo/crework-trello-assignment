@@ -15,26 +15,26 @@ export const user = Router();
 user.post("/create", async (req, res) => {
   try {
     const rawData = req.body;
-    console.log(rawData);
     const parsedData = createNewUserReqSchema.safeParse(rawData);
+
     if (!parsedData.success) {
       res.sendStatus(403);
       return;
     }
-    const sessionToken = await createUserAndSessionToken(parsedData.data);
 
-    res.cookie("session_token", sessionToken, {
+    const userData = await createUserAndSessionToken(parsedData.data);
+
+    res.cookie("session_token", userData.token, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       secure: true,
     });
-
-    res.send({ message: "user created" });
+    res.json({ id: userData.userId, name: userData.name });
   } catch (e) {
     if (e instanceof UserAlreadyExists) {
       res.sendStatus(403);
+      return;
     }
-    console.log(e);
     res.sendStatus(500);
   }
 });
@@ -45,8 +45,13 @@ user.get("/checkSession", async (req, res) => {
     const session_token = cookie.session_token;
     if (typeof session_token === "string") {
       const isSession = await validateToken(session_token);
-      if (isSession.valid) res.send({ isAuth: true });
-    } else res.send({ isAuth: false });
+      if (isSession.valid)
+        res.send({
+          name: isSession.name,
+          id: isSession.userId,
+        });
+      else res.sendStatus(403);
+    } else res.sendStatus(500);
   } catch (e) {}
 });
 
@@ -57,16 +62,20 @@ user.post("/login", async (req, res) => {
     res.sendStatus(403);
     return;
   }
-  const token = await loginAndCreateToken(parsedData.data);
-  res.cookie("session_token", token, {
+  const userData = await loginAndCreateToken(parsedData.data);
+  if (!userData) {
+    res.sendStatus(403);
+    return;
+  }
+  res.cookie("session_token", userData?.token, {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     secure: true,
   });
-  res.sendStatus(200);
+  res.json({ id: userData.userId, name: userData.name });
 });
 
-user.post("/logout", async (req, res) => {
+user.get("/logout", async (req, res) => {
   const cookie = req.cookies;
   const session_token = cookie.session_token;
   if (typeof session_token === "string") {
@@ -80,5 +89,6 @@ user.get("/tasks", authMiddleware, async (req, res) => {
     res.sendStatus(403);
     return;
   }
-  return Task.find({ userId });
+  const tasks = await Task.find({ userId });
+  res.send(tasks);
 });

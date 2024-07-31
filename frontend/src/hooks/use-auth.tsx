@@ -1,12 +1,12 @@
 "use client";
 import { API, fetcher } from "@/fetcher";
-import { useAuthData } from "@/types";
+import { User } from "@/types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthContextType {
   loading: boolean;
-  data: useAuthData;
-  signIn: () => void;
+  user: User | null;
+  signIn: (user: User) => void;
   signOut: () => void;
 }
 
@@ -14,24 +14,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
-  const [data, setData] = useState<useAuthData>({ isAuth: false });
+  const [user, setUser] = useState<User | null>(null);
 
-  const signIn = () => {
-    setData({ isAuth: true });
+  const signIn = (user: User) => {
+    setUser(user);
   };
 
   const signOut = () => {
-    setData({ isAuth: false });
+    setUser(null);
   };
 
   useEffect(() => {
     const fetchData = async (retries = 2) => {
       try {
-        const res = await fetcher<useAuthData>(API.user.checkSession);
+        const res = await fetcher<User>(API.user.checkSession);
         if (res.status === "failed") {
           throw new Error("Fetch failed");
         }
-        setData(res.data);
+        console.log(res.data);
+        setUser(res.data);
       } catch (err) {
         if (retries > 0) {
           fetchData(retries - 1);
@@ -45,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ data, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

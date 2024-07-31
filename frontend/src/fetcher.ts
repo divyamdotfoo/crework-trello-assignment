@@ -3,18 +3,22 @@ const BASE_URL =
 
 export const API = {
   user: {
-    createUser: "/user/create",
-    checkSession: "/user/checkSession",
-    login: "/user/login",
-    logout: "/user/logout",
-    getBoardData: "/user/board",
+    createUser: "/api/user/create",
+    checkSession: "/api/user/checkSession",
+    login: "/api/user/login",
+    logout: "/api/user/logout",
+    getTasks: "/api/user/tasks",
+  },
+  task: {
+    create: "/api/task/create",
+    edit: "/api/task/edit",
+    delete: "/api/task/delete",
   },
 } as const;
 
 type FetcherRes<T> =
   | {
       status: "failed";
-      message: string;
       statusCode: number;
     }
   | { status: "success"; data: T };
@@ -23,6 +27,7 @@ export const fetcher = async <T>(
   path: string,
   options: RequestInit = {}
 ): Promise<FetcherRes<T>> => {
+  console.log("fetching");
   try {
     const res = await fetch(`${BASE_URL}${path}`, {
       headers: {
@@ -33,7 +38,6 @@ export const fetcher = async <T>(
     });
     if (!res.ok) {
       return {
-        message: "",
         status: "failed",
         statusCode: res.status,
       };
@@ -49,7 +53,6 @@ export const fetcher = async <T>(
   } catch (e) {
     console.log(e);
     return {
-      message: "",
       status: "failed",
       statusCode: 404,
     };

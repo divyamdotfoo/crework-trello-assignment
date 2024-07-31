@@ -14,6 +14,7 @@ export const authMiddleware = async (
       req.userId = isValid.userId;
       next();
     }
+  } else {
+    res.sendStatus(403);
   }
-  res.sendStatus(403);
 };

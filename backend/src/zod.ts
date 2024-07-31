@@ -16,20 +16,25 @@ export type LoginUserReqObject = z.infer<typeof loginUserRequestSchema>;
 
 // tasks
 
-export const createTaskReqSchema = z.object({
-  title: z.string().max(150),
-  description: z.string().nullable(),
-  status: z.enum(["todo", "completed", "in-progress", "under-review"]),
-  priority: z.enum(["low", "medium", "urgent"]).nullable(),
-  deadline: z.number().nullable(),
-});
+export const createTaskReqSchema = z
+  .object({
+    title: z.string().max(150),
+    description: z.string().optional(),
+    status: z.enum(["todo", "completed", "inProgress", "underReview"]),
+    priority: z.enum(["low", "medium", "urgent"]).optional(),
+    deadline: z.number().optional(),
+  })
+  .passthrough();
 
-export const editTaskReqSchema = createTaskReqSchema.partial().extend({
-  id: z.string(),
-});
+export const editTaskReqSchema = createTaskReqSchema
+  .partial()
+  .extend({
+    _id: z.string(),
+  })
+  .passthrough();
 
 export const deleteTaskReqSchema = z.object({
-  id: z.string(),
+  _id: z.string(),
 });
 
 export type TaskReqObj = z.infer<typeof createTaskReqSchema>;

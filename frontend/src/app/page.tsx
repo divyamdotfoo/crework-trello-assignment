@@ -6,13 +6,13 @@
  */
 "use client";
 
-import { SignUpForm } from "@/components/signup";
+import { DashBoardPage } from "@/components/dashboard";
+import { LoginPage } from "@/components/login";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function Page() {
-  const { data, loading } = useAuth();
-  console.log(data);
+  const { user, loading } = useAuth();
   if (loading) return <p>loading ....</p>;
-  if (!data.isAuth) return <SignUpForm />;
-  return <p>trello board</p>;
+  if (!user) return <LoginPage />;
+  return <DashBoardPage />;
 }

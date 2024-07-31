@@ -17,6 +17,7 @@ export interface ITask extends Document {
   userId: string;
   title: string;
   status: TaskStatus;
+  createdAt: number;
   description?: string;
   priority?: TaskPriority;
   deadline?: number;

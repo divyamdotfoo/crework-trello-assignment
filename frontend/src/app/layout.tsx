@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Barlow, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/hooks/use-auth";
 
