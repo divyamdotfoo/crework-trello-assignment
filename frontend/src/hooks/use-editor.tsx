@@ -135,7 +135,6 @@ export function EditorProvider({ children }: { children: React.ReactNode }) {
               <Select
                 defaultValue={task?.status}
                 onValueChange={(value) => {
-                  console.log(value);
                   setTask((p) => ({ ...p, status: value as TaskStatus }));
                 }}
               >

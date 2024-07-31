@@ -31,7 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (res.status === "failed") {
           throw new Error("Fetch failed");
         }
-        console.log(res.data);
         setUser(res.data);
       } catch (err) {
         if (retries > 0) {

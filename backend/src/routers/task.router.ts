@@ -16,7 +16,6 @@ task.post("/create", async (req, res) => {
   try {
     const userId = req.userId;
     const rawData = req.body;
-    console.log("raw", rawData);
     const parsedData = createTaskReqSchema.safeParse(rawData);
 
     if (!parsedData.success || typeof userId !== "string") {
@@ -25,7 +24,6 @@ task.post("/create", async (req, res) => {
     }
 
     const task = await createTask(parsedData.data, userId);
-    console.log("res", task);
     res.send(task);
   } catch (e) {
     res.sendStatus(500);
@@ -36,7 +34,6 @@ task.put("/edit", async (req, res) => {
   try {
     const rawData = req.body;
     const parsedData = editTaskReqSchema.safeParse(rawData);
-    console.log(rawData);
     if (!parsedData.success) {
       res.sendStatus(403);
 

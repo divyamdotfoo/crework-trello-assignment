@@ -19,11 +19,14 @@ import { TaskItem } from "./task-item";
 import { SortBtnIcon } from "./svgs";
 import { API, fetcher } from "@/fetcher";
 import { Loader2 } from "lucide-react";
+import { useSound } from "@/hooks/use-sound";
 
 export function TaskBoard() {
-  const { items, setItems, tasks, loading } = useTask();
+  const { items, setItems, tasks, loading, setTasks } = useTask();
 
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  const { play, pause } = useSound("/hurray.wav");
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -109,11 +112,17 @@ export function TaskBoard() {
 
     const activeContainer = findContainer(id as string) as TaskStatus;
     const overContainer = findContainer(overId as string) as TaskStatus;
+
     if (overContainer) {
-      console.log("here");
-      const task = tasks.find((t) => t._id === id);
-      if (task) {
-        const editedTask: Task = { ...task, status: overContainer };
+      if (overContainer === TaskStatus.Completed) play("/hurray.wav");
+      const idx = tasks.findIndex((t) => t._id === id);
+      if (idx && tasks[idx].status !== overContainer) {
+        const editedTask: Task = { ...tasks[idx], status: overContainer };
+        setTasks((p) => [
+          ...p.slice(0, idx),
+          editedTask,
+          ...p.slice(idx + 1, p.length),
+        ]);
         fetcher(API.task.edit, {
           method: "PUT",
           body: JSON.stringify(editedTask),

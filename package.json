@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cd frontend && pnpm install && pnpm build && cp -r out ../backend/out && cd ../backend && pnpm install && pnpm build",
+    "build": "cd frontend && pnpm install && pnpm build && rm -rf ../backend/out && cp -r out ../backend/out && cd ../backend && pnpm install && pnpm build",
     "start": "cd backend && node dist/server.js"
   },
   "keywords": [],

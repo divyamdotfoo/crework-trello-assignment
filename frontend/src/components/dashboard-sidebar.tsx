@@ -1,5 +1,4 @@
 import { useAuth } from "@/hooks/use-auth";
-import AvatarIcon from "../../public/avatar.jpeg";
 import Image from "next/image";
 import { ChevronsRight, Loader, BellDot } from "lucide-react";
 import {
@@ -93,7 +92,9 @@ function Avatar() {
       <div className=" flex items-center gap-2">
         <div className=" w-5 h-6 rounded-md">
           <Image
-            src={AvatarIcon}
+            src={"/avatar.jpeg"}
+            width={700}
+            height={700}
             alt="avatar"
             className=" w-full h-full rounded-md "
           />

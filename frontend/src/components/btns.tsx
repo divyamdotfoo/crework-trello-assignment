@@ -9,6 +9,8 @@ import {
   TaskStatus,
 } from "@/types";
 import { Plus } from "lucide-react";
+import { RadixTrash } from "./svgs";
+import { motion } from "framer-motion";
 
 export function CreateNewTaskBtn({
   data,
@@ -21,10 +23,8 @@ export function CreateNewTaskBtn({
 }) {
   const { setTasks } = useTask();
   const handler = async () => {
-    console.log(data);
     const parsedData = createTaskReqSchema.safeParse(data);
     if (!parsedData.success) {
-      console.log(parsedData.error.errors);
       return;
     }
     const res = await fetcher<Task>(API.task.create, {
@@ -38,13 +38,15 @@ export function CreateNewTaskBtn({
     onSuccess();
   };
   return (
-    <button
+    <motion.button
+      whileTap={{ scale: 0.99 }}
+      whileHover={{ scale: 1.01 }}
       disabled={!data.title || !data.status}
       onClick={handler}
       className="bg-bluePrimary disabled:cursor-not-allowed disabled:opacity-70 text-white py-2 flex items-center justify-center w-full rounded-md"
     >
       Add task
-    </button>
+    </motion.button>
   );
 }
 
@@ -59,10 +61,8 @@ export function EditTaskBtn({
 }) {
   const { setTasks } = useTask();
   const handler = async () => {
-    console.log(data);
     const parsedData = editTaskReqSchema.safeParse(data);
     if (!parsedData.success) {
-      console.log(parsedData.error.errors);
       return;
     }
     const res = await fetcher<unknown>(API.task.edit, {
@@ -81,12 +81,14 @@ export function EditTaskBtn({
     onSuccess();
   };
   return (
-    <button
+    <motion.button
+      whileTap={{ scale: 0.99 }}
+      whileHover={{ scale: 1.01 }}
       onClick={handler}
       className="bg-bluePrimary disabled:cursor-not-allowed disabled:opacity-70 text-white py-2 flex items-center justify-center w-full rounded-md"
     >
       Edit task
-    </button>
+    </motion.button>
   );
 }
 
@@ -107,7 +109,6 @@ export function OpenNewTaskSheet({
       setTask({});
       return;
     }
-    console.log(variant);
     switch (variant) {
       case TaskStatus.ToDo:
         setTask({ status: "todo" });
@@ -128,23 +129,50 @@ export function OpenNewTaskSheet({
 
   if (variant === "none") {
     return (
-      <button
+      <motion.button
+        whileTap={{ scale: 0.99 }}
+        whileHover={{ scale: 1.01 }}
         onClick={handler}
         className={`px-2 py-1 rounded-md shadow-sm shadow-black/50 bg-bluePrimary text-white ${classname}`}
       >
         {children}
-      </button>
+      </motion.button>
     );
   }
 
   return (
-    <button
+    <motion.button
+      whileTap={{ scale: 0.99 }}
+      whileHover={{ scale: 1.01 }}
       onClick={handler}
       className=" bg-gradient-to-b from-blackMuted to-blackSecondary text-white rounded-md px-2 py-2 flex items-center justify-between"
     >
       <span>Add new</span>
       <Plus className=" w-4 h-4 text-white" />
       {children}
-    </button>
+    </motion.button>
+  );
+}
+
+export function DeleteTaskBtn({ taskId }: { taskId: string }) {
+  const { setTasks } = useTask();
+
+  return (
+    <motion.button
+      whileTap={{ scale: 0.99 }}
+      whileHover={{ scale: 1.01 }}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setTasks((p) => p.filter((task) => task._id !== taskId));
+        fetcher(API.task.delete, {
+          method: "DELETE",
+          body: JSON.stringify({ _id: taskId }),
+        });
+      }}
+      className=" absolute top-2 right-2 w-5 h-5 text-red-400 hover:scale-110 transition-all"
+    >
+      <RadixTrash />
+    </motion.button>
   );
 }

@@ -9,10 +9,20 @@
 import { DashBoardPage } from "@/components/dashboard";
 import { LoginPage } from "@/components/login";
 import { useAuth } from "@/hooks/use-auth";
+import { Star } from "lucide-react";
 
 export default function Page() {
   const { user, loading } = useAuth();
-  if (loading) return <p>loading ....</p>;
+
+  if (loading)
+    return (
+      <div className=" w-screen h-screen bg-gradient-to-b from-white to-blueBackground flex items-center justify-center">
+        <p className=" text-blackAccent font-semibold text-3xl">
+          Checking auth client side.....
+        </p>
+      </div>
+    );
+
   if (!user) return <LoginPage />;
   return <DashBoardPage />;
 }

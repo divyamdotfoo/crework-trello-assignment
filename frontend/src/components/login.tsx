@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { createNewUserReqSchema } from "@/types";
 import { Input } from "./ui/input";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 export function LoginPage() {
   const [tab, setTab] = useState<"login" | "signup">("login");
@@ -13,19 +14,26 @@ export function LoginPage() {
   const showLogIn = () => setTab("login");
 
   return (
-    <div className=" w-screen h-screen p-4 flex justify-center items-start pt-20 bg-gradient-to-b from-white to-blueBackground">
+    <div className=" relative w-screen h-screen p-4 flex justify-center items-start pt-20 bg-gradient-to-b from-white to-blueBackground">
       {tab === "login" ? (
         <LoginForm showSignUp={showSignUp} />
       ) : (
         <SignUpForm showLogIn={showLogIn} />
       )}
+
+      <Link
+        href={"https://github.com/divyamdotfoo/crework-trello-assignment"}
+        className=" absolute top-4 right-8 text-xl underline"
+      >
+        Github link
+      </Link>
     </div>
   );
 }
 
 export function LoginForm({ showSignUp }: { showSignUp: () => void }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test@gmail.com");
+  const [password, setPassword] = useState("testpassword");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
   const { signIn } = useAuth();

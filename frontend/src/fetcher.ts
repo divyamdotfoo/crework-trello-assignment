@@ -27,7 +27,6 @@ export const fetcher = async <T>(
   path: string,
   options: RequestInit = {}
 ): Promise<FetcherRes<T>> => {
-  console.log("fetching");
   try {
     const res = await fetch(`${BASE_URL}${path}`, {
       headers: {

@@ -3,6 +3,7 @@ import { user } from "./routers/user.router";
 import { task } from "./routers/task.router";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import cors from "cors";
 const app = express();
 app.use(cookieParser());
 

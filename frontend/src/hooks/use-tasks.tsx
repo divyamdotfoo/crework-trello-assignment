@@ -57,7 +57,6 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       setTasks(res.data);
-      console.log(res.data);
       setItems((prev) => ({ ...prev, ...separateTaskIdByStatus(res.data) }));
     }
     getTasks();
